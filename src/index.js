@@ -3,14 +3,29 @@ import LoadMore from "./js/components/loadMore.js";
 import refs from "./js/components/refs.js";
 import templateList from "./hbs/listImages.hbs";
 import "./scss/style.scss";
+import "./js/components/modal.js";
 
 const apiSevice = new API();
 const loadMoreBtn = new LoadMore("[name='load-more']");
 
+const options = {
+  rootMargin: "50px",
+  threshold: 1,
+};
+
+function onEntry(entries, observer) {
+  console.log(entries[0].isIntersecting);
+  if (entries[0].isIntersecting) {
+    fetchAction();
+  }
+}
+
+const observer = new IntersectionObserver(onEntry, options);
+observer.observe(refs.lineTarget);
+
 refs.searchForm.addEventListener("submit", onSerach);
-loadMoreBtn.refs.button.addEventListener("click", () => {
-  const scroll = true;
-  fetchAction(scroll);
+loadMoreBtn.refs.button.addEventListener("click", (e) => {
+  fetchAction(e.target.name);
 });
 
 function onSerach(event) {
@@ -26,7 +41,7 @@ function onSerach(event) {
   fetchAction();
 }
 
-function fetchAction(scroll = false) {
+function fetchAction(nameElement = "") {
   loadMoreBtn.disable();
   apiSevice
     .fetchAction()
@@ -35,7 +50,7 @@ function fetchAction(scroll = false) {
       loadMoreBtn.enable();
     })
     .finally(() => {
-      if (scroll) {
+      if (nameElement === "load-more") {
         refs.anchor.scrollIntoView({ block: "end", behavior: "smooth" });
       }
     });
@@ -43,6 +58,7 @@ function fetchAction(scroll = false) {
 
 function renderListImages(data) {
   const markup = templateList(data);
+
   refs.listImages.insertAdjacentHTML("beforeend", markup);
 }
 
