@@ -2,39 +2,44 @@ import API from "./js/API-service.js";
 import LoadMore from "./js/components/loadMore.js";
 import refs from "./js/components/refs.js";
 import templateList from "./hbs/listImages.hbs";
+
 import "./scss/style.scss";
-import "./js/components/modal.js";
+import "../node_modules/basiclightbox/src/styles/main.scss";
+import Modal from "./js/components/modal.js";
 
 const apiSevice = new API();
 const loadMoreBtn = new LoadMore("[name='load-more']");
 
-const options = {
-  rootMargin: "50px",
-  threshold: 1,
-};
+const observer = new IntersectionObserver(observerHandler, { threshold: 1 });
+observer.observe(refs.lineTargetEl);
 
-function onEntry(entries, observer) {
-  console.log(entries[0].isIntersecting);
-  if (entries[0].isIntersecting) {
+function observerHandler([entries]) {
+  if (entries.isIntersecting && apiSevice.query !== "") {
     fetchAction();
   }
 }
-
-const observer = new IntersectionObserver(onEntry, options);
-observer.observe(refs.lineTarget);
 
 refs.searchForm.addEventListener("submit", onSerach);
 loadMoreBtn.refs.button.addEventListener("click", (e) => {
   fetchAction(e.target.name);
 });
 
+refs.listImagesEl.addEventListener("click", showModal);
+
+function showModal(e) {
+  if (e.target.nodeName !== "IMG") return;
+  const dataSrc = e.target.dataset.source;
+
+  const modal = new Modal(dataSrc);
+}
+
 function onSerach(event) {
   event.preventDefault();
 
-  const query = event.currentTarget.elements.query.value;
+  const query = event.currentTarget.elements.query.value.trim();
 
   apiSevice.query = query;
-
+  if (apiSevice.query === "") return;
   apiSevice.resetPage();
   clearListImages();
   loadMoreBtn.show();
@@ -59,9 +64,9 @@ function fetchAction(nameElement = "") {
 function renderListImages(data) {
   const markup = templateList(data);
 
-  refs.listImages.insertAdjacentHTML("beforeend", markup);
+  refs.listImagesEl.insertAdjacentHTML("beforeend", markup);
 }
 
 function clearListImages() {
-  refs.listImages.innerHTML = "";
+  refs.listImagesEl.innerHTML = "";
 }

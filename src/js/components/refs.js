@@ -1,7 +1,7 @@
 const refs = {
   searchForm: document.querySelector(".search-form"),
-  listImages: document.querySelector(".js-gallery"),
-  lineTarget: document.querySelector(".line-target"),
+  listImagesEl: document.querySelector(".js-gallery"),
+  lineTargetEl: document.querySelector(".target-element"),
   anchor: document.getElementById("anchor"),
 };
 
