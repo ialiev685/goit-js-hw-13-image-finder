@@ -41,8 +41,8 @@ function onSerach(event) {
   apiSevice.query = query;
   if (apiSevice.query === "") return;
   apiSevice.resetPage();
+  loadMoreBtn.hide();
   clearListImages();
-  // loadMoreBtn.show();
   fetchAction();
 }
 
