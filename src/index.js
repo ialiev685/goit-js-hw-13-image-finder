@@ -19,7 +19,7 @@ function observerHandler([entries]) {
   }
 }
 
-refs.searchForm.addEventListener("submit", onSerach);
+refs.searchFormEl.addEventListener("submit", onSerach);
 loadMoreBtn.refs.button.addEventListener("click", (e) => {
   fetchAction(e.target.name);
 });
@@ -42,7 +42,7 @@ function onSerach(event) {
   if (apiSevice.query === "") return;
   apiSevice.resetPage();
   clearListImages();
-  loadMoreBtn.show();
+  // loadMoreBtn.show();
   fetchAction();
 }
 
@@ -51,6 +51,9 @@ function fetchAction(nameElement = "") {
   apiSevice
     .fetchAction()
     .then((data) => {
+      if (data.length !== 0) {
+        loadMoreBtn.show();
+      }
       renderListImages(data);
       loadMoreBtn.enable();
     })

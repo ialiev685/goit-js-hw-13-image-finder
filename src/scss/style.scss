@@ -107,3 +107,16 @@
   height: 50px;
   // background-color: blueviolet;
 }
+
+.pnotify-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 50%);
+}
+
+.pnotify-center .pnotify-text {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 20px;
+  text-align: center;
+}

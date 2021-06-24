@@ -1,6 +1,4 @@
-import { alert, notice, info, success, error } from "@pnotify/core";
-import "@pnotify/core/dist/BrightTheme.css";
-import "@pnotify/core/dist/Material.css";
+import { messageNotFound, messageError } from "./components/message.js";
 
 const BASE_URL = "https://pixabay.com/api/";
 const KEY = "22163812-fdf68a623e9a64649f570bea3";
@@ -20,13 +18,14 @@ export default class API {
       })
       .then(({ hits }) => {
         if (hits.length === 0) {
-          this.messageNotFound("Ничего не найдено!");
+          messageNotFound("Ничего не найдено!");
         }
         this.incrementPage();
         return hits;
       })
       .catch((error) => {
-        this.messageError(error.message);
+        console.dir(error);
+        messageError(error.message);
       });
   }
 
@@ -44,23 +43,5 @@ export default class API {
 
   incrementPage() {
     this.page += 1;
-  }
-
-  messageNotFound(text) {
-    const myInfo = notice({
-      text: text,
-      delay: 5000,
-      closer: false,
-      sticker: false,
-      addClass: "pnotify-center",
-    });
-  }
-  messageError(text) {
-    const myInfo = error({
-      text: text,
-      delay: 250,
-      closer: false,
-      sticker: false,
-    });
   }
 }
